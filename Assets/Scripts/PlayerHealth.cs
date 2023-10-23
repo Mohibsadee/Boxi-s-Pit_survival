@@ -1,24 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayersHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour
 {
-    // Start is called before the first frame update
-
-    public int maxHealth = 10;
     public int health;
+    public int maxHealth = 100;
+
+  
+
+
     void Start()
     {
         health = maxHealth;
     }
 
-    public void TakeDamage(int damage){
-      
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("StoneToFall") )
+        {
+          
+            TakeDamage(5);
+        }
+        if (collision.gameObject.CompareTag("Stone") )
+        {
+          
+            TakeDamage(0);
+        }
+    }
+
+    void TakeDamage(int damage)
+    {
         health -= damage;
 
-        if(health <= 0){
-            Destroy(gameObject);
+        if (health <= 0)
+        {
+            Die();
         }
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

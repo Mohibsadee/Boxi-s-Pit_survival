@@ -12,8 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private float jumpingPower = 50f;
 
     private bool isFaceingRight = true;
-    private bool isFullPowerJump = false;
-    private float fullPowerJumpStartTime = 0f;
+    private bool isCursed = false;
+    private float curseStartTime = 0f;
 
     private SpawnScript isDangerCheck;
     private float isDangerCheckTime= 0f;
@@ -22,8 +22,10 @@ public class PlayerMovement : MonoBehaviour
 
     public ParticleSystem moshParticleSystem;
     private bool isTextOn = false;
+    public static bool isPoisonus = false;
 
-
+    private float poisonDuration = 5f; // Adjust as needed
+    private float poisonEndTime = 0f;
 
 
 
@@ -35,31 +37,41 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
+
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         isDangerCheck = FindObjectOfType<SpawnScript>();
 
-        //superpower
+        //superCurse
 
-
-        if (Input.GetKeyDown(KeyCode.F))
+    if (isPoisonus)
+    {   
+        if (!isCursed)
         {
-
-            Debug.Log("F key pressed");
-            isFullPowerJump = true;
-            fullPowerJumpStartTime = Time.time;
-
+            isCursed = true;
+            curseStartTime = Time.time;
         }
 
-
-
-        if (isFullPowerJump && Time.time - fullPowerJumpStartTime >= 3f)
+        if (Time.time - curseStartTime >= poisonDuration)
         {
-            isFullPowerJump = false;
-        }
+            isCursed = false;
+            Debug.Log("Not poisonous anymore");
+       }
+    }
 
-        /////jump
+// Reset the isPoisonus flag after 3 seconds
+    if (isCursed && Time.time - curseStartTime >= 3f)
+    {
+        isPoisonus = false;
+        Debug.Log("Not poisonous anymore");
+    }
+
+       
+
+
+        /////jump/////
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
@@ -134,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Cube") && isFullPowerJump)
+        if (isPoisonus && isCursed && collision.gameObject.CompareTag("Cube"))
         {
             Instantiate(moshParticleSystem, transform.position, Quaternion.identity);
             Destroy(collision.gameObject);
@@ -143,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Cube") && isFullPowerJump)
+        if (isPoisonus && isCursed && collision.gameObject.CompareTag("Cube"))
         {
             Instantiate(moshParticleSystem, transform.position, Quaternion.identity);
             Destroy(collision.gameObject);
