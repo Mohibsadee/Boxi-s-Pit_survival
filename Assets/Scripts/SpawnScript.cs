@@ -12,6 +12,7 @@ public class SpawnScript : MonoBehaviour
   public GameObject stoneToTurn;//stone that I want to turn after 3 sec
   public GameObject miscToFall;
   public GameObject goldOre;
+   public GameObject lifeOre;
   public GameObject poisonTree;
 
   public ParticleSystem stoneParticleSystem;
@@ -21,6 +22,8 @@ public class SpawnScript : MonoBehaviour
 
   private float stoneCoolDownStart = 0f;
   private GameObject newStone;
+
+  
 
   private List<GameObject> stoneToChange = new List<GameObject>();
  /*  private float delayBetweenChanges = 3f;
@@ -45,6 +48,7 @@ public class SpawnScript : MonoBehaviour
       float randomXPosition = Random.Range(minXPosition, maxXPosition);
       Vector3 spawnPosition = new Vector3(randomXPosition, transform.position.y, transform.position.z);
 
+
       int randomInt = Random.Range(1, 101);
       if (randomInt < 45)//33
       {
@@ -52,19 +56,19 @@ public class SpawnScript : MonoBehaviour
 
         int randomCube = Random.Range(1, 101);
 
-        if (randomCube < 1)//45
+        if (randomCube < 35)//45
         {
           Instantiate(cubeToFall, spawnPosition, Quaternion.identity);
 
         }
-        else if (randomCube > 6 && randomCube < 7)//46 55
+        else if (randomCube > 36 && randomCube < 50)//46 55
         { 
           Instantiate(bigCubeToFall, spawnPosition, Quaternion.identity);
 
         }
 
 
-        else if (randomCube > 8 && randomCube < 9)//56 75
+        else if (randomCube > 51 && randomCube < 69)//56 75
         { 
         
           Instantiate(poisonTree, spawnPosition, Quaternion.identity);
@@ -77,6 +81,7 @@ public class SpawnScript : MonoBehaviour
           
           isDanger = true;
           newStone = Instantiate(stoneToFall, spawnPosition, Quaternion.identity);
+          newStone.tag ="StoneToFall";
           stoneCoolDownStart = Time.time;
 
 
@@ -110,15 +115,21 @@ public class SpawnScript : MonoBehaviour
       if (newStone != null && Time.time - stoneCoolDownStart > 3f)
         {
             Destroy(newStone); // Destroy the old stone
-            var stonePos = Instantiate(stoneToTurn, newStone.transform.position, Quaternion.identity); // Instantiate the new stone
-            Instantiate(stoneParticleSystem, stonePos.transform.position, Quaternion.identity);
-
-            int goldChance = Random.Range(1, 101);
-            if(goldChance > 50)
+           // var stonePos = Instantiate(stoneToTurn, newStone.transform.position, Quaternion.identity); // Instantiate the new stone
              
-              Instantiate(goldOre, new Vector3(newStone.transform.position.x, newStone.transform.position.y + 0.2f, newStone.transform.position.z), Quaternion.identity);
+             var stonePos =   Instantiate(stoneToTurn,new Vector3(newStone.transform.position.x,newStone.transform.position.y,newStone.transform.position.z),Quaternion.identity);
+             Instantiate(stoneParticleSystem, stonePos.transform.position, Quaternion.identity);
+          
+
+            int chance = Random.Range(1, 101);
+            if(chance < 33){
+                Instantiate(goldOre, new Vector3(newStone.transform.position.x, newStone.transform.position.y + 0.2f, newStone.transform.position.z), Quaternion.identity);
+            }
+            if(chance>34 && chance <66){
+                Instantiate(lifeOre, new Vector3(newStone.transform.position.x, newStone.transform.position.y + 0.2f, newStone.transform.position.z), Quaternion.identity);
+            }    
             
         }
-      
+
   }
 }
